@@ -8,7 +8,7 @@ declare global {
         isSignedIn: () => Promise<boolean>;
         signIn: () => Promise<void>;
         signOut: () => Promise<void>;
-      };
+      }; 
       fs: {
         write: (
           path: string,
@@ -49,6 +49,7 @@ interface PuterStore {
   auth: {
     user: PuterUser | null;
     isAuthenticated: boolean;
+    isReady: boolean;
     signIn: () => Promise<void>;
     signOut: () => Promise<void>;
     refreshUser: () => Promise<void>;
@@ -105,6 +106,7 @@ export const usePuterStore = create<PuterStore>((set, get) => {
       error: msg,
       isLoading: false,
       auth: {
+        ...get().auth,
         user: null,
         isAuthenticated: false,
         signIn: get().auth.signIn,
@@ -131,6 +133,7 @@ export const usePuterStore = create<PuterStore>((set, get) => {
         const user = await puter.auth.getUser();
         set({
           auth: {
+            ...get().auth,
             user,
             isAuthenticated: true,
             signIn: get().auth.signIn,
@@ -145,6 +148,7 @@ export const usePuterStore = create<PuterStore>((set, get) => {
       } else {
         set({
           auth: {
+            ...get().auth,
             user: null,
             isAuthenticated: false,
             signIn: get().auth.signIn,
@@ -196,6 +200,7 @@ export const usePuterStore = create<PuterStore>((set, get) => {
       await puter.auth.signOut();
       set({
         auth: {
+          ...get().auth,
           user: null,
           isAuthenticated: false,
           signIn: get().auth.signIn,
@@ -225,6 +230,7 @@ export const usePuterStore = create<PuterStore>((set, get) => {
       const user = await puter.auth.getUser();
       set({
         auth: {
+          ...get().auth,
           user,
           isAuthenticated: true,
           signIn: get().auth.signIn,
@@ -418,6 +424,7 @@ export const usePuterStore = create<PuterStore>((set, get) => {
     auth: {
       user: null,
       isAuthenticated: false,
+      isReady: false,
       signIn,
       signOut,
       refreshUser,
